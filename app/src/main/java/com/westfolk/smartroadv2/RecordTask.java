@@ -6,6 +6,8 @@ import android.location.LocationManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +28,7 @@ import java.util.concurrent.BlockingQueue;
 public class RecordTask extends TimerTask {
 
     private Context context;
+    //private WsClient client;
     private LocationManager locationManager;
     private BlockingQueue<String> queue;
     private String file_path;
@@ -41,6 +44,7 @@ public class RecordTask extends TimerTask {
         context = _context;
         queue = _queue;
         file_path = path;
+        //client = new WsClient();
         locationManager = lm;
 
         try {
@@ -59,6 +63,10 @@ public class RecordTask extends TimerTask {
         if(queue.isEmpty()) {
             //retrieve the location
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(location == null){
+                Log.i("pd","chien");
+                return;
+            }
             Log.i("Test", "Latitude " + location.getLatitude() + " et longitude " + location.getLongitude());
             try {
                 writer.write("lt:" + location.getLatitude() + ";lg:" + location.getLongitude() +"\n");
@@ -80,7 +88,14 @@ public class RecordTask extends TimerTask {
                     e.printStackTrace();
                 }
             }
-            read_record();
+            try{
+                JSONObject obj =read_record();
+                //client.post("checkpoint",null,new CheckpointHandler());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             this.cancel();
         }
     }
@@ -89,30 +104,22 @@ public class RecordTask extends TimerTask {
         Build the JSON we will use to send to our server forom the log file
         Could be more efficient without the file but it's more convenient, it keeps a log
      */
-    public JSONObject read_record() {
+    public JSONObject read_record() throws IOException, JSONException {
         FileInputStream fileIn= null;
         JSONObject result = new JSONObject();
         JSONArray tab = new JSONArray();
-        try {
-            fileIn = context.openFileInput(file_path);
-            BufferedReader InputRead= new BufferedReader(new InputStreamReader(fileIn));
-            String line;
-            while((line=InputRead.readLine())!=null){
-                Log.i("fichier", line);
-                JSONObject elem = new JSONObject();
-                String parts[] = line.split(":");
-                elem.put("lt",parts[1].split(";")[0]);
-                elem.put("lg",parts[2]);
-                tab.put(elem);
-            }
-            result.put("value",tab);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        fileIn = context.openFileInput(file_path);
+        BufferedReader InputRead= new BufferedReader(new InputStreamReader(fileIn));
+        String line;
+        while((line=InputRead.readLine())!=null){
+            Log.i("fichier", line);
+            JSONObject elem = new JSONObject();
+            String parts[] = line.split(":");
+            elem.put("lt",parts[1].split(";")[0]);
+            elem.put("lg",parts[2]);
+            tab.put(elem);
         }
+        result.put("value",tab);
         Log.i("JSON", result.toString());
         return result;
     }
