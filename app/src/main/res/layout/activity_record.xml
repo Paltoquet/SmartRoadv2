@@ -19,21 +19,23 @@
             />
 
         <Button
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:background="@drawable/stop"
-            android:layout_toRightOf="@id/launchrecord"
-            android:id="@+id/stoprecord"
-            android:layout_marginLeft="20dp"
-            />
-        <Button
             android:layout_height="40dp"
             android:layout_width="70dp"
             android:background="#ffffff"
+            android:text="Send"
             android:layout_below="@id/launchrecord"
             android:id="@+id/send"
             android:layout_centerHorizontal="true"
             />
+
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:background="@drawable/stop"
+            android:id="@+id/stoprecord"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
 
