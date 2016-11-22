@@ -64,7 +64,7 @@ public class RecordTask extends TimerTask {
             //retrieve the location
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if(location == null){
-                Log.i("pd","chien");
+                Log.i("RecordTask","Location null");
                 return;
             }
             Log.i("Test", "Latitude " + location.getLatitude() + " et longitude " + location.getLongitude());
