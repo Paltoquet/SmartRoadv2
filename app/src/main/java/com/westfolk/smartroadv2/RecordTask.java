@@ -67,7 +67,7 @@ public class RecordTask extends TimerTask {
                 Log.i("RecordTask","Location null");
                 return;
             }
-            Log.i("Test", "Latitude " + location.getLatitude() + " et longitude " + location.getLongitude());
+            Log.i("RecordTask", "Latitude " + location.getLatitude() + " et longitude " + location.getLongitude());
             try {
                 writer.write("lt:" + location.getLatitude() + ";lg:" + location.getLongitude() +"\n");
             } catch (IOException e) {
