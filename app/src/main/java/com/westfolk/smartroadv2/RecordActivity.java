@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Environment;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -14,9 +15,13 @@ import android.view.View;
 import android.widget.Button;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -147,5 +152,21 @@ public class RecordActivity extends ActionBarActivity {
         result.put("value", tab);
         Log.i("JSON", result.toString());
         return result;
+    }
+
+    public void writeToFile(String data) throws IOException {
+
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+        File file = new File(path, "SmartRoad.json");
+
+        try {
+            FileOutputStream stream = new FileOutputStream(file);
+            stream.write(data.getBytes());
+            stream.close();
+            Log.i("Write", "Written "+ file);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

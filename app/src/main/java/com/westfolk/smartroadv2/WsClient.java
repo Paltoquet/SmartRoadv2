@@ -7,6 +7,7 @@ import com.loopj.android.http.*;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
@@ -19,7 +20,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 public class WsClient{
 
     private Context context;
-    private static final String BASE_URL = "http://192.168.1.43/";
+    private static final String BASE_URL = "http://192.168.1.14/";
     private static AsyncHttpClient client = new AsyncHttpClient(7777);
 
     public WsClient(Context _context){
@@ -49,6 +50,14 @@ class CheckpointHandler extends AsyncHttpResponseHandler{
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         Log.i("reception http",new String(responseBody));
+
+        //Write file
+        RecordActivity recordActivity = new RecordActivity();
+        try {
+            recordActivity.writeToFile(new String(responseBody));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
