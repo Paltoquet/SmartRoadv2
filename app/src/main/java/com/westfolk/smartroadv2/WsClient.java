@@ -58,6 +58,10 @@ class CheckpointHandler extends AsyncHttpResponseHandler{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        recordActivity.readFile();
+
+
     }
 
     @Override
