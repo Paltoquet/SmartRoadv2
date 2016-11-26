@@ -43,6 +43,7 @@ public class RecordActivity extends ActionBarActivity {
     private WsClient client;
     private Timer timer;
     private BlockingQueue<String> queue;
+    TimerTask task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class RecordActivity extends ActionBarActivity {
         client = new WsClient(getApplicationContext());
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         queue = new ArrayBlockingQueue<String>(1024);
+
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             gps_enabel = true;
             Log.i("gps","true");
@@ -87,7 +89,7 @@ public class RecordActivity extends ActionBarActivity {
                     queue.clear();
                     timer = new Timer();
                     //create a RecordTask which will save the longitude and latitude
-                    TimerTask task = new RecordTask(locationManager, getApplicationContext(),queue,"record.txt");
+                    task = new RecordTask(locationManager, getApplicationContext(),queue,"record.txt");
                     //call the run method of the Tash each 30sec
                     timer.schedule(task, 0, 30000);
                 }
@@ -99,7 +101,10 @@ public class RecordActivity extends ActionBarActivity {
                 //kill the timer if it's running
                 if(timer!=null){
                     queue.add("stop");
+                    timer.cancel();
+                    timer.purge();
                     timer = null;
+                    task.run();
                 }
             }
         });
