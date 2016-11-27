@@ -1,4 +1,5 @@
 package com.westfolk.smartroadv2;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -44,12 +45,17 @@ public class RecordActivity extends ActionBarActivity {
     private Button launch;
     private Button stop;
     private Button send_info;
+    private Button proximity;
     private boolean gps_enabel = false;
     private LocationManager locationManager;
     private WsClient client;
     private Timer timer;
     private BlockingQueue<String> queue;
     TimerTask task;
+    Context context;
+
+    //Intent Action
+    String ACTION_FILTER = "com.westfolk.smartroadv2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,7 @@ public class RecordActivity extends ActionBarActivity {
         launch = (Button) findViewById(R.id.launchrecord);
         stop = (Button) findViewById(R.id.stoprecord);
         send_info = (Button) findViewById(R.id.send);
+        proximity = (Button) findViewById(R.id.proximity);
         client = new WsClient(getApplicationContext());
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         queue = new ArrayBlockingQueue<String>(1024);
@@ -97,7 +104,7 @@ public class RecordActivity extends ActionBarActivity {
                     //create a RecordTask which will save the longitude and latitude
                     task = new RecordTask(locationManager, getApplicationContext(),queue,"record.txt");
                     //call the run method of the Tash each 30sec
-                    timer.schedule(task, 0, 30000);
+                    timer.schedule(task, 0, 5000);
                 }
             }
         });
@@ -128,6 +135,42 @@ public class RecordActivity extends ActionBarActivity {
                 }
             }
         });
+        proximity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             //Add proximity alerte
+                Utils utils = new Utils();
+                String data = utils.readFile("SmartRoad.json");
+
+                //Setting up My Broadcast Intent
+                Intent intent = new Intent(ACTION_FILTER);
+                PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), -1, intent, 0);
+
+                try {
+                    JSONObject dataJson = new JSONObject(data);
+                    JSONArray array = dataJson.getJSONArray("value");
+
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject jsonobject = array.getJSONObject(i);
+                        //System.out.println(jsonobject);
+
+                        double lt = Double.parseDouble(jsonobject.get("lt").toString());
+                        double lg = Double.parseDouble(jsonobject.get("lg").toString());
+                        //System.out.println(lt + " "+ lg);
+
+                        //(latitude, longitude, radius, expiration, intent); -1 for no expirtaion
+                        locationManager.addProximityAlert(lt, lg, 50, -1, pi);
+                    }
+                    Log.i("RecordActivity", "Ajout de proximity alerte");
+                    //locationManager.addProximityAlert(43.58686952, 6.96030132, 10, -1, pi);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
 
     }
 
@@ -153,44 +196,5 @@ public class RecordActivity extends ActionBarActivity {
         result.put("value", tab);
         Log.i("JSON", result.toString());
         return result;
-    }
-
-    public void writeToFile(String data) throws IOException {
-
-        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-        File file = new File(path, "SmartRoad.json");
-
-        try {
-            FileOutputStream stream = new FileOutputStream(file);
-            stream.write(data.getBytes());
-            stream.close();
-            Log.i("Write", "Written "+ file);
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void readFile() {
-
-        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-        final File file = new File(path, "SmartRoad.json");
-
-
-        StringBuilder text = new StringBuilder();
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            br.close();
-        } catch (IOException e) {
-            //You'll need to add proper error handling here
-        }
-        Log.i("Read SmartRoad.json", text.toString());
     }
 }

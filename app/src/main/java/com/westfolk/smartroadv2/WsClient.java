@@ -47,21 +47,21 @@ public class WsClient{
 
 class CheckpointHandler extends AsyncHttpResponseHandler{
 
+    private Context context;
+
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         Log.i("reception http",new String(responseBody));
 
         //Write file
-        RecordActivity recordActivity = new RecordActivity();
+        Utils utils = new Utils();
         try {
-            recordActivity.writeToFile(new String(responseBody));
+            utils.writeToFile(new String(responseBody), "SmartRoad.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        recordActivity.readFile();
-
-
+        //utils.readFile("SmartRoad.json");
     }
 
     @Override

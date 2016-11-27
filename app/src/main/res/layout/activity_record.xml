@@ -38,5 +38,14 @@
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
+    <Button
+        android:text="Add proximity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/proximity" />
+
 
 </RelativeLayout>
