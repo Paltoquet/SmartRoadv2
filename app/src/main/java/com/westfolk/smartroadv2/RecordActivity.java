@@ -2,6 +2,7 @@ package com.westfolk.smartroadv2;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -143,7 +144,7 @@ public class RecordActivity extends ActionBarActivity {
                 String data = utils.readFile("SmartRoad.json");
 
                 //Setting up My Broadcast Intent
-                Intent intent = new Intent(ACTION_FILTER);
+                Intent intent = new Intent("com.westfolk.smartroadv2.ProximityReceiver");
                 PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), -1, intent, 0);
 
                 try {
@@ -168,7 +169,11 @@ public class RecordActivity extends ActionBarActivity {
                     e.printStackTrace();
                 }
 
+                //Log.i("RecordActivity", "--------- Test ---------");
+                //locationManager.addProximityAlert(43.61809495, 7.0661471, 10, -1, pi);
 
+                IntentFilter filter = new IntentFilter("com.westfolk.smartroadv2.ProximityReceiver");
+                registerReceiver(new ProximityReceiver(), filter);
             }
         });
 

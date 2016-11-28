@@ -11,7 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 
-public class ProximityReciever extends BroadcastReceiver {
+public class ProximityReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -22,11 +22,9 @@ public class ProximityReciever extends BroadcastReceiver {
         //Gives whether the user is entering or leaving in boolean form
         boolean state = intent.getBooleanExtra(key, false);
 
-        Log.i("ProximityReciever", "Draykoon le nuub");
-
         if(state){
             // Call the Notification Service or anything else that you would like to do here
-            Log.i("ProximityReciever", "Welcome to my Area");
+            Log.i("ProximityReceiver", "Welcome to my Area");
             Toast.makeText(context, "Welcome to my Area", Toast.LENGTH_SHORT).show();
         }else{
             //Other custom Notification
