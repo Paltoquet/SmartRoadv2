@@ -16,6 +16,7 @@ public class MenuActivity extends ActionBarActivity {
 
     Button play;
     Button score;
+    private Button proximity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,7 @@ public class MenuActivity extends ActionBarActivity {
         setContentView(R.layout.activity_menu);
         play=(Button)findViewById(R.id.start);
         score=(Button)findViewById(R.id.stats);
+        proximity=(Button)findViewById(R.id.proximity);
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,6 +38,14 @@ public class MenuActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent secondeActivite = new Intent(MenuActivity.this, RecordActivity.class);
                 startActivity(secondeActivite);
+                overridePendingTransition(R.anim.left_animation, R.anim.right_animation);
+            }
+        });
+        proximity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent thirdActivite = new Intent(MenuActivity.this, ProximityAlert.class);
+                startActivity(thirdActivite);
                 overridePendingTransition(R.anim.left_animation, R.anim.right_animation);
             }
         });

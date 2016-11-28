@@ -28,6 +28,18 @@
         android:layout_below="@id/start"
         android:layout_marginTop="30dp"
         />
+
+    <Button
+        style="@style/bouton"
+        android:layout_centerHorizontal="true"
+        android:text="Proximity"
+        android:id="@+id/proximity"
+        android:background="@drawable/bouton"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/stats"
+        android:layout_marginTop="30dp"
+        />
 <!--
     <TextView
 

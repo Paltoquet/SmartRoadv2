@@ -46,17 +46,12 @@ public class RecordActivity extends ActionBarActivity {
     private Button launch;
     private Button stop;
     private Button send_info;
-    private Button proximity;
     private boolean gps_enabel = false;
     private LocationManager locationManager;
     private WsClient client;
     private Timer timer;
     private BlockingQueue<String> queue;
     TimerTask task;
-    Context context;
-
-    //Intent Action
-    String ACTION_FILTER = "com.westfolk.smartroadv2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +60,6 @@ public class RecordActivity extends ActionBarActivity {
         launch = (Button) findViewById(R.id.launchrecord);
         stop = (Button) findViewById(R.id.stoprecord);
         send_info = (Button) findViewById(R.id.send);
-        proximity = (Button) findViewById(R.id.proximity);
         client = new WsClient(getApplicationContext());
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         queue = new ArrayBlockingQueue<String>(1024);
@@ -136,47 +130,6 @@ public class RecordActivity extends ActionBarActivity {
                 }
             }
         });
-        proximity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-             //Add proximity alerte
-                Utils utils = new Utils();
-                String data = utils.readFile("SmartRoad.json");
-
-                //Setting up My Broadcast Intent
-                Intent intent = new Intent("com.westfolk.smartroadv2.ProximityReceiver");
-                PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), -1, intent, 0);
-
-                try {
-                    JSONObject dataJson = new JSONObject(data);
-                    JSONArray array = dataJson.getJSONArray("value");
-
-                    for (int i = 0; i < array.length(); i++) {
-                        JSONObject jsonobject = array.getJSONObject(i);
-                        //System.out.println(jsonobject);
-
-                        double lt = Double.parseDouble(jsonobject.get("lt").toString());
-                        double lg = Double.parseDouble(jsonobject.get("lg").toString());
-                        //System.out.println(lt + " "+ lg);
-
-                        //(latitude, longitude, radius, expiration, intent); -1 for no expirtaion
-                        locationManager.addProximityAlert(lt, lg, 50, -1, pi);
-                    }
-                    Log.i("RecordActivity", "Ajout de proximity alerte");
-                    //locationManager.addProximityAlert(43.58686952, 6.96030132, 10, -1, pi);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                //Log.i("RecordActivity", "--------- Test ---------");
-                //locationManager.addProximityAlert(43.61809495, 7.0661471, 10, -1, pi);
-
-                IntentFilter filter = new IntentFilter("com.westfolk.smartroadv2.ProximityReceiver");
-                registerReceiver(new ProximityReceiver(), filter);
-            }
-        });
-
     }
 
     /*
