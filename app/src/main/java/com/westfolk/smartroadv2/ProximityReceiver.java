@@ -10,8 +10,14 @@ import android.location.LocationManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.westfolk.smartroadv2.interfaces.Observable;
+import com.westfolk.smartroadv2.interfaces.Observer;
 
-public class ProximityReceiver extends BroadcastReceiver {
+
+public class ProximityReceiver extends BroadcastReceiver implements Observable {
+
+
+    private Observer activity;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -26,10 +32,21 @@ public class ProximityReceiver extends BroadcastReceiver {
             // Call the Notification Service or anything else that you would like to do here
             Log.i("ProximityReceiver", "Welcome to my Area");
             Toast.makeText(context, "Welcome to my Area", Toast.LENGTH_SHORT).show();
+            notifyChanges();
         }else{
             //Other custom Notification
             Log.i("MyTProximityRecieverag", "Thank you for visiting my Area,come back again !!");
             Toast.makeText(context, "Thank you for visiting my Area,come back again !!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void notifyChanges() {
+        activity.update();
+    }
+
+    @Override
+    public void addObserver(Observer obs) {
+        activity = obs;
     }
 }

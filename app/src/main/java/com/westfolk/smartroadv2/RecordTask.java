@@ -88,14 +88,6 @@ public class RecordTask extends TimerTask {
                     e.printStackTrace();
                 }
             }
-            try{
-                JSONObject obj =read_record();
-                //client.post("checkpoint",null,new CheckpointHandler());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             this.cancel();
         }
     }
