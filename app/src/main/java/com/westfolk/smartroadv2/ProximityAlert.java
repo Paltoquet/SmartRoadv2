@@ -125,8 +125,8 @@ public class ProximityAlert extends Activity implements Observer {
                     PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), current_checkpoint, intent, 0);
 
                     checkpoint = checkpoints.get(current_checkpoint);
-                    /* Static test 5000 a modifier */
-                    locationManager.addProximityAlert(Double.parseDouble(checkpoint.getLatitude()), Double.parseDouble(checkpoint.getLongitude()), 5000, -1, pi);
+
+                    locationManager.addProximityAlert(Double.parseDouble(checkpoint.getLatitude()), Double.parseDouble(checkpoint.getLongitude()), 50, -1, pi);
                     //set our receiver to check incoming BOUGE_TON_CUL action
                     IntentFilter filter = new IntentFilter("com.westfolk.smartroadv2.BOUGE_TON_CUL");
                     registerReceiver(receiver,filter);
@@ -164,8 +164,7 @@ public class ProximityAlert extends Activity implements Observer {
             Intent it = new Intent("com.westfolk.smartroadv2.BOUGE_TON_CUL");
             PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), current_checkpoint, it, 0);
 
-            /*  Static test 5000 a modifier */
-            locationManager.addProximityAlert(Double.parseDouble(checkpoint.getLatitude()), Double.parseDouble(checkpoint.getLongitude()), 5000, -1, pi);
+            locationManager.addProximityAlert(Double.parseDouble(checkpoint.getLatitude()), Double.parseDouble(checkpoint.getLongitude()), 50, -1, pi);
             Toast.makeText(context, "Proximity "+ (current_checkpoint + 1) +"/"+ (number_of_checkpoint) +" ready...", Toast.LENGTH_SHORT).show();
         }
         else{
