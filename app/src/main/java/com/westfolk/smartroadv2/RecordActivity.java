@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,6 +53,7 @@ public class RecordActivity extends ActionBarActivity {
     private Timer timer;
     private BlockingQueue<String> queue;
     TimerTask task;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class RecordActivity extends ActionBarActivity {
         client = new WsClient(getApplicationContext());
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         queue = new ArrayBlockingQueue<String>(1024);
+        context = this.getApplicationContext();
 
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             gps_enabel = true;
@@ -93,6 +96,7 @@ public class RecordActivity extends ActionBarActivity {
         launch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(context, "Starting record...", Toast.LENGTH_SHORT).show();
                 if(timer ==null) {
                     queue.clear();
                     timer = new Timer();
@@ -107,6 +111,7 @@ public class RecordActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 //kill the timer if it's running
+                Toast.makeText(context, "Stopping record...", Toast.LENGTH_SHORT).show();
                 if(timer!=null){
                     queue.add("stop");
                     timer.cancel();

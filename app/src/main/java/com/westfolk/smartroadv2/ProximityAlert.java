@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.westfolk.smartroad.R;
 import com.westfolk.smartroadv2.interfaces.Observer;
@@ -39,16 +40,22 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class ProximityAlert extends Activity implements Observer {
 
     private Button proximity;
+    private Button sendButton;
     private LocationManager locationManager;
     private ProximityReceiver receiver;
     private boolean gps_enabel = false;
     private FileOutputStream fileout;
     private OutputStreamWriter writer;
+    private Context context;
     private String file_path = "current_log.txt";
+    private JSONObject res;
 
     private ArrayList<Checkpoint> checkpoints;
     private int current_checkpoint = 0;
     private int number_of_checkpoint = 0;
+
+    private Checkpoint checkpoint;
+    private WsClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +63,13 @@ public class ProximityAlert extends Activity implements Observer {
         setContentView(R.layout.activity_proximity);
 
         proximity = (Button) findViewById(R.id.proximity);
+        sendButton = (Button) findViewById(R.id.send);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         receiver = new ProximityReceiver();
         receiver.addObserver(this);
         checkpoints = new ArrayList<Checkpoint>();
+        context = this.getApplicationContext();
+        client = new WsClient(getApplicationContext());
 
         try {
             fileout= openFileOutput(file_path, MODE_PRIVATE);
@@ -73,78 +83,72 @@ public class ProximityAlert extends Activity implements Observer {
             Log.i("gps","true");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
                 @Override
-                public void onLocationChanged(Location location) {
-
-                }
-
+                public void onLocationChanged(Location location) {}
                 @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
+                public void onStatusChanged(String provider, int status, Bundle extras) {}
                 @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
+                public void onProviderEnabled(String provider) {}
                 @Override
-                public void onProviderDisabled(String provider) {
-
-                }
+                public void onProviderDisabled(String provider) {}
             });
         }
 
-        //TODO : unregisterReceiver()
         proximity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(context, "Launching promimity...", Toast.LENGTH_SHORT).show();
+
                 //Add proximity alerte
                 Utils utils = new Utils();
                 String data = utils.readFile("SmartRoad.json");
 
                 //Setting up My Broadcast Intent
-                //Intent intent = new Intent("com.westfolk.smartroadv2.ProximityReceiver");
                 try {
                     JSONObject dataJson = new JSONObject(data);
                     JSONArray array = dataJson.getJSONArray("value");
                     int i;
                     for (i = 0; i < array.length(); i++) {
                         JSONObject jsonobject = array.getJSONObject(i);
-                        /*
-                        double lt = Double.parseDouble(jsonobject.get("lt").toString());
-                        double lg = Double.parseDouble(jsonobject.get("lg").toString());
-                        */
                         String lt = jsonobject.get("lt").toString();
                         String lg = jsonobject.get("lg").toString();
                         checkpoints.add(new Checkpoint(lt,lg,i));
-                        //System.out.println(lt + " "+ lg);
-
-                        //(latitude, longitude, radius, expiration, intent); -1 for no expirtaion
-                        //locationManager.addProximityAlert(lt, lg, 50, -1, pi);
                     }
-                number_of_checkpoint = i;
+                    number_of_checkpoint = i;
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 if(!checkpoints.isEmpty()){
-                    Log.i("RecordActivity", "--------- Test ---------");
                     //specify the name of your custom intent action in the manisfest like  BOUGE TON CUL PD
                     Intent intent = new Intent("com.westfolk.smartroadv2.BOUGE_TON_CUL");
                     PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), current_checkpoint, intent, 0);
-                    locationManager.addProximityAlert(43.61809495, 7.0661471, 50, -1, pi);
+
+                    checkpoint = checkpoints.get(current_checkpoint);
+                    /* Static test 5000 a modifier */
+                    locationManager.addProximityAlert(Double.parseDouble(checkpoint.getLatitude()), Double.parseDouble(checkpoint.getLongitude()), 5000, -1, pi);
                     //set our receiver to check incoming BOUGE_TON_CUL action
                     IntentFilter filter = new IntentFilter("com.westfolk.smartroadv2.BOUGE_TON_CUL");
                     registerReceiver(receiver,filter);
+
+                    Toast.makeText(context, "Proximity 1" +"/"+ (number_of_checkpoint) + " ready...", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Send to the server
+                client.post("timing", res, new TimingHandler());
+            }
+        });
     }
 
     @Override
     public void update() {
-        Log.i("notified","passage au prochain checkpoint");
+        Log.i("ProximityAlert","Passage au prochain checkpoint");
         checkpoints.get(current_checkpoint).setDate(new Date());
 
         //removing current proximity alert
@@ -154,25 +158,29 @@ public class ProximityAlert extends Activity implements Observer {
         current_checkpoint++;
 
         //if we are not at the end
-        if(current_checkpoint <= number_of_checkpoint){
-            Checkpoint checkpoint = checkpoints.get(current_checkpoint);
+        if(current_checkpoint < number_of_checkpoint){
+            checkpoint = checkpoints.get(current_checkpoint);
             //creating new proximity alert
             Intent it = new Intent("com.westfolk.smartroadv2.BOUGE_TON_CUL");
             PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), current_checkpoint, it, 0);
-            locationManager.addProximityAlert(43.61809495, 7.0661471, 50, -1, pi);
+
+            /*  Static test 5000 a modifier */
+            locationManager.addProximityAlert(Double.parseDouble(checkpoint.getLatitude()), Double.parseDouble(checkpoint.getLongitude()), 5000, -1, pi);
+            Toast.makeText(context, "Proximity "+ (current_checkpoint + 1) +"/"+ (number_of_checkpoint) +" ready...", Toast.LENGTH_SHORT).show();
         }
         else{
-            Log.i("the end","pd");
+            Toast.makeText(context, "You arrived !", Toast.LENGTH_SHORT).show();
+            Log.i("ProximityAlert","Fin du parcours");
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            JSONObject res = new JSONObject();
+            res = new JSONObject();
             JSONArray values = new JSONArray();
             JSONObject checkpoint;
             //write the result to file
             for(Checkpoint i : checkpoints){
                 checkpoint = new JSONObject();
                 try {
-                    checkpoint.put("lat",i.getLatitude());
-                    checkpoint.put("long",i.getLongitude());
+                    checkpoint.put("lt",i.getLatitude());
+                    checkpoint.put("lg",i.getLongitude());
                     checkpoint.put("id",i.getId());
                     checkpoint.put("date",dateFormat.format(i.getDate()));
                     values.put(checkpoint);
@@ -181,8 +189,10 @@ public class ProximityAlert extends Activity implements Observer {
                 }
             }
             try {
-                res.put("values",values);
+                res.put("value",values);
+                Log.i("ProximityAlert", String.valueOf(res));
                 writer.write(res.toString());
+
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {

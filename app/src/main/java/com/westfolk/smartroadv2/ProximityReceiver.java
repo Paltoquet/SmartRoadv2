@@ -31,12 +31,8 @@ public class ProximityReceiver extends BroadcastReceiver implements Observable {
         if(state){
             // Call the Notification Service or anything else that you would like to do here
             Log.i("ProximityReceiver", "Welcome to my Area");
-            Toast.makeText(context, "Welcome to my Area", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Current proximity reached !", Toast.LENGTH_SHORT).show();
             notifyChanges();
-        }else{
-            //Other custom Notification
-            Log.i("MyTProximityRecieverag", "Thank you for visiting my Area,come back again !!");
-            Toast.makeText(context, "Thank you for visiting my Area,come back again !!", Toast.LENGTH_SHORT).show();
         }
     }
 

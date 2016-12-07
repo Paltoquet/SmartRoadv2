@@ -2,9 +2,11 @@ package com.westfolk.smartroadv2;
 import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.loopj.android.http.*;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -32,8 +34,22 @@ public class WsClient{
 
     public void post(String url, JSONObject params, AsyncHttpResponseHandler responseHandler) {
         Log.i("send", params.toString());
+
+        Toast.makeText(context, "Sending...", Toast.LENGTH_SHORT).show();
+
+        /* Static test */
+        /*
+        JSONObject test = null;
+        try {
+            test = new JSONObject("{\"value\":[{\"lt\":\"43.616919\",\"lg\":\"7.067092\"}, {\"lt\":\"43.616919\",\"lg\":\"7.067092\"}]}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        */
         try {
             StringEntity entity = new StringEntity(params.toString());
+            /* Static test */
+            //StringEntity entity = new StringEntity(test.toString());
             client.post(context,getAbsoluteUrl(url), entity,"application/json", responseHandler);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -47,8 +63,6 @@ public class WsClient{
 
 class CheckpointHandler extends AsyncHttpResponseHandler{
 
-    private Context context;
-
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         Log.i("reception http",new String(responseBody));
@@ -60,7 +74,6 @@ class CheckpointHandler extends AsyncHttpResponseHandler{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         //utils.readFile("SmartRoad.json");
     }
 
@@ -69,3 +82,17 @@ class CheckpointHandler extends AsyncHttpResponseHandler{
         Log.i("reception http","fail");
     }
 }
+
+class TimingHandler extends AsyncHttpResponseHandler{
+
+    @Override
+    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+        Log.i("reception http",new String(responseBody));
+    }
+
+    @Override
+    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+        Log.i("reception http","fail");
+    }
+}
+
