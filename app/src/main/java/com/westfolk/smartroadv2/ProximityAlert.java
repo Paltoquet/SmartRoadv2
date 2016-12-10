@@ -195,7 +195,7 @@ public class ProximityAlert extends Activity implements Observer {
                 //Write file
                 Utils utils = new Utils();
                 try {
-                    utils.writeToFileWithoutErase(res.toString(), "Timing.txt");
+                    utils.writeToFileWithoutErase(res.toString()+"SPLIT", "Timing.txt");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

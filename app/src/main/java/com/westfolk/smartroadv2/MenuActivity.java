@@ -36,7 +36,7 @@ public class MenuActivity extends ActionBarActivity {
         score.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent secondeActivite = new Intent(MenuActivity.this, RecordActivity.class);
+                Intent secondeActivite = new Intent(MenuActivity.this, StatsActivity.class);
                 startActivity(secondeActivite);
                 overridePendingTransition(R.anim.left_animation, R.anim.right_animation);
             }
