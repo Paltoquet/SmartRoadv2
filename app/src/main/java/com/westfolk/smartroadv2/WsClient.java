@@ -22,7 +22,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 public class WsClient{
 
     private Context context;
-    private static final String BASE_URL = "http://10.188.47.95/";
+    private static final String BASE_URL = "http://192.168.1.46/";
     private static AsyncHttpClient client = new AsyncHttpClient(7777);
 
     public WsClient(Context _context){
@@ -41,15 +41,15 @@ public class WsClient{
         /*
         JSONObject test = null;
         try {
-            test = new JSONObject("{\"value\":[{\"lt\":\"43.616919\",\"lg\":\"7.067092\"}, {\"lt\":\"43.616919\",\"lg\":\"7.067092\"}]}");
+            test = new JSONObject("{\"value\":[{\"lt\":\"43.58698817\",\"lg\":\"6.96081141\"}, {\"lt\":\"43.58698817\",\"lg\":\"6.96081141\"}]}");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        */
+           */
         try {
-            StringEntity entity = new StringEntity(params.toString());
             /* Static test */
             //StringEntity entity = new StringEntity(test.toString());
+            StringEntity entity = new StringEntity(params.toString());
             client.post(context,getAbsoluteUrl(url), entity,"application/json", responseHandler);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

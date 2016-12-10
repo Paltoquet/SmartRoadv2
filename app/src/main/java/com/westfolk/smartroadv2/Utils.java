@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -26,6 +27,22 @@ public class Utils {
         try {
             FileOutputStream stream = new FileOutputStream(file);
             stream.write(data.getBytes());
+            stream.close();
+            Log.i("Utils", "Written "+ file);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeToFileWithoutErase(String data, String fileName) throws IOException {
+
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+        File file = new File(path, fileName);
+
+        try {
+            FileWriter stream = new FileWriter(file, true);
+            stream.write(data);
             stream.close();
             Log.i("Utils", "Written "+ file);
         }

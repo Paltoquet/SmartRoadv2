@@ -190,11 +190,17 @@ public class ProximityAlert extends Activity implements Observer {
             try {
                 res.put("value",values);
                 Log.i("ProximityAlert", String.valueOf(res));
-                writer.write(res.toString());
+                //writer.write(res.toString());
+
+                //Write file
+                Utils utils = new Utils();
+                try {
+                    utils.writeToFileWithoutErase(res.toString(), "Timing.txt");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
