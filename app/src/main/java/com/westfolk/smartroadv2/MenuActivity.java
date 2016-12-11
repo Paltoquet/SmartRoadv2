@@ -14,18 +14,18 @@ import com.westfolk.smartroad.R;
 public class MenuActivity extends ActionBarActivity {
 
 
-    Button play;
-    Button score;
+    Button start;
+    Button stats;
     private Button proximity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        play=(Button)findViewById(R.id.start);
-        score=(Button)findViewById(R.id.stats);
+        start=(Button)findViewById(R.id.start);
+        stats=(Button)findViewById(R.id.stats);
         proximity=(Button)findViewById(R.id.proximity);
-        play.setOnClickListener(new View.OnClickListener() {
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent secondeActivite = new Intent(MenuActivity.this, RecordActivity.class);
@@ -33,7 +33,7 @@ public class MenuActivity extends ActionBarActivity {
                 overridePendingTransition(R.anim.left_animation, R.anim.right_animation);
             }
         });
-        score.setOnClickListener(new View.OnClickListener() {
+        stats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent secondeActivite = new Intent(MenuActivity.this, StatsActivity.class);

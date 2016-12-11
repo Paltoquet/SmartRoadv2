@@ -20,8 +20,8 @@
     <Button
         style="@style/bouton"
         android:layout_centerHorizontal="true"
-        android:text="Stats"
-        android:id="@+id/stats"
+        android:text="Proximity"
+        android:id="@+id/proximity"
         android:background="@drawable/bouton"
         android:layout_width="300dp"
         android:layout_height="60dp"
@@ -32,12 +32,12 @@
     <Button
         style="@style/bouton"
         android:layout_centerHorizontal="true"
-        android:text="Proximity"
-        android:id="@+id/proximity"
+        android:text="Stats"
+        android:id="@+id/stats"
         android:background="@drawable/bouton"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:layout_below="@id/stats"
+        android:layout_below="@id/proximity"
         android:layout_marginTop="30dp"
         />
 <!--

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Lucas on 10/12/2016.
@@ -130,7 +131,12 @@ public class StatsActivity extends Activity {
                 }
             }
 
-            data.add("Temps total : "+ (dateStart.getTime() - dateEnd.getTime()) );
+            long millis = ( dateEnd.getTime() - dateStart.getTime() );
+            String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+                    TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+
+            data.add("Temps total : "+ hms);
 
             listDataChild.put(listDataHeader.get(i-1), data);
         }
