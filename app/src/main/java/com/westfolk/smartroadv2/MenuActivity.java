@@ -16,6 +16,7 @@ public class MenuActivity extends ActionBarActivity {
 
     Button start;
     Button stats;
+    Button test;
     private Button proximity;
 
     @Override
@@ -25,6 +26,7 @@ public class MenuActivity extends ActionBarActivity {
         start=(Button)findViewById(R.id.start);
         stats=(Button)findViewById(R.id.stats);
         proximity=(Button)findViewById(R.id.proximity);
+        test = (Button)findViewById(R.id.test);
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,6 +47,14 @@ public class MenuActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent thirdActivite = new Intent(MenuActivity.this, ProximityAlert.class);
+                startActivity(thirdActivite);
+                overridePendingTransition(R.anim.left_animation, R.anim.right_animation);
+            }
+        });
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent thirdActivite = new Intent(MenuActivity.this,TestActivity.class);
                 startActivity(thirdActivite);
                 overridePendingTransition(R.anim.left_animation, R.anim.right_animation);
             }

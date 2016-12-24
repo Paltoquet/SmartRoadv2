@@ -22,7 +22,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 public class WsClient{
 
     private Context context;
-    private static final String BASE_URL = "http://192.168.1.46/";
+    private static final String BASE_URL = "http://192.168.1.43/";
     private static AsyncHttpClient client = new AsyncHttpClient(7777);
 
     public WsClient(Context _context){
@@ -33,7 +33,7 @@ public class WsClient{
     }
 
     public void post(String url, JSONObject params, AsyncHttpResponseHandler responseHandler) {
-        Log.i("send", params.toString());
+        Log.i("send", params.toString().replace("\\",""));
 
         Toast.makeText(context, "Sending...", Toast.LENGTH_SHORT).show();
 
@@ -49,7 +49,7 @@ public class WsClient{
         try {
             /* Static test */
             //StringEntity entity = new StringEntity(test.toString());
-            StringEntity entity = new StringEntity(params.toString());
+            StringEntity entity = new StringEntity(params.toString().replace("\\",""));
             client.post(context,getAbsoluteUrl(url), entity,"application/json", responseHandler);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

@@ -49,6 +49,7 @@ public class ProximityAlert extends Activity implements Observer {
     private Context context;
     private String file_path = "current_log.txt";
     private JSONObject res;
+    private JSONArray values;
 
     private ArrayList<Checkpoint> checkpoints;
     private int current_checkpoint = 0;
@@ -120,9 +121,21 @@ public class ProximityAlert extends Activity implements Observer {
                 }
 
                 if(!checkpoints.isEmpty()){
+                    //init the JSON
+                    res = new JSONObject();
+                    values = new JSONArray();
+                    JSONObject travelInfo = new JSONObject();
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+                    try {
+                        travelInfo.put("start",dateFormat.format(new Date()));
+                        res.put("travel",travelInfo);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     //specify the name of your custom intent action in the manisfest like  BOUGE TON CUL PD
                     Intent intent = new Intent("com.westfolk.smartroadv2.BOUGE_TON_CUL");
                     PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), current_checkpoint, intent, 0);
+
 
                     checkpoint = checkpoints.get(current_checkpoint);
 
@@ -150,13 +163,24 @@ public class ProximityAlert extends Activity implements Observer {
     public void update() {
         Log.i("ProximityAlert","Passage au prochain checkpoint");
         checkpoints.get(current_checkpoint).setDate(new Date());
-
         //removing current proximity alert
         Intent intent = new Intent("com.westfolk.smartroadv2.BOUGE_TON_CUL");
         PendingIntent remove = PendingIntent.getBroadcast(getApplicationContext(), current_checkpoint , intent, 0);
         locationManager.removeProximityAlert(remove);
         current_checkpoint++;
-
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+        JSONObject check;
+        check = new JSONObject();
+        try {
+            check.put("lt",checkpoint.getLatitude());
+            check.put("lg", checkpoint.getLongitude());
+            check.put("id", checkpoint.getId());
+            check.put("date",dateFormat.format(checkpoint.getDate()));
+            values.put(check);
+            res.put("value",values);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         //if we are not at the end
         if(current_checkpoint < number_of_checkpoint){
             checkpoint = checkpoints.get(current_checkpoint);
@@ -166,32 +190,17 @@ public class ProximityAlert extends Activity implements Observer {
 
             locationManager.addProximityAlert(Double.parseDouble(checkpoint.getLatitude()), Double.parseDouble(checkpoint.getLongitude()), 50, -1, pi);
             Toast.makeText(context, "Proximity "+ (current_checkpoint + 1) +"/"+ (number_of_checkpoint) +" ready...", Toast.LENGTH_SHORT).show();
+            client.post("predict",res,new TimingHandler());
         }
+        //if we are at the end store the result on the server
         else{
             Toast.makeText(context, "You arrived !", Toast.LENGTH_SHORT).show();
             Log.i("ProximityAlert","Fin du parcours");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            res = new JSONObject();
-            JSONArray values = new JSONArray();
-            JSONObject checkpoint;
-            //write the result to file
-            for(Checkpoint i : checkpoints){
-                checkpoint = new JSONObject();
-                try {
-                    checkpoint.put("lt",i.getLatitude());
-                    checkpoint.put("lg",i.getLongitude());
-                    checkpoint.put("id",i.getId());
-                    checkpoint.put("date",dateFormat.format(i.getDate()));
-                    values.put(checkpoint);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
             try {
-                res.put("value",values);
+                res.put("value", values);
                 Log.i("ProximityAlert", String.valueOf(res));
+                client.post("record",res,new TimingHandler());
                 //writer.write(res.toString());
-
                 //Write file
                 Utils utils = new Utils();
                 try {
