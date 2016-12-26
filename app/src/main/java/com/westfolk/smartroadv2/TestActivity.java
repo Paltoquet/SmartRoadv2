@@ -1,7 +1,12 @@
 package com.westfolk.smartroadv2;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -12,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,20 +42,29 @@ public class TestActivity extends Activity {
         test_record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 try {
-                    JSONObject obj = predict();
-                    client.post("record",obj,new TimingHandler());
+
+                    JSONObject obj = predict("test_road");
+                    JSONArray array = obj.getJSONArray("travels");
+                    for(int i = 0; i < array.length(); i++) {
+                        client.post("record", (JSONObject) array.get(i), new TimingHandler());
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
         });
         test_predict.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    JSONObject obj = predict();
-                    client.post("predict",obj,new TimingHandler());
+
+                    JSONObject obj = predict("TestRoad");
+                    JSONArray array = obj.getJSONArray("travels");
+                    client.post("predict", (JSONObject) array.get(0), new TimingHandler());
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -59,7 +74,8 @@ public class TestActivity extends Activity {
 
 
 
-        private JSONObject predict() throws JSONException {
+        private JSONObject predict(String file) throws JSONException {
+            /*
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
             JSONObject obj = new JSONObject();
             JSONArray values = new JSONArray();
@@ -87,6 +103,15 @@ public class TestActivity extends Activity {
             values.put(checkpoint);
             obj.put("travel",travel);
             obj.put("values",values);
+            return obj;
+            */
+           // String path = "/data/user/0/com.westfolk.smartroadv2/TestJson";
+            //Log.i("AA", path);
+
+            Utils utils = new Utils();
+            JSONObject obj = utils.readFileJSON(getResources().openRawResource(R.raw.test_road));
+
+
             return obj;
         }
 }

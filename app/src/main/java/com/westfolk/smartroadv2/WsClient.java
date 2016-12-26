@@ -34,23 +34,15 @@ public class WsClient{
     }
 
     public void post(String url, JSONObject params, AsyncHttpResponseHandler responseHandler) {
-        Log.i("send", params.toString().replace("\\",""));
-
         Toast.makeText(context, "Sending...", Toast.LENGTH_SHORT).show();
 
-        /* Static test */
-        /*
-        JSONObject test = null;
         try {
-            test = new JSONObject("{\"value\":[{\"lt\":\"43.58698817\",\"lg\":\"6.96081141\"}, {\"lt\":\"43.58698817\",\"lg\":\"6.96081141\"}]}");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-           */
-        try {
-            /* Static test */
-            //StringEntity entity = new StringEntity(test.toString());
-            StringEntity entity = new StringEntity(params.toString().replace("\\",""));
+            StringEntity entity;
+            if(url == "record") {
+                entity = new StringEntity(params.toString().replace("\\",""));
+            } else {
+                entity = new StringEntity(params.toString());
+            }
             client.post(context,getAbsoluteUrl(url), entity,"application/json", responseHandler);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

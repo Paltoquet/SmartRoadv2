@@ -3,6 +3,7 @@ package com.westfolk.smartroadv2;
 import android.os.Environment;
 import android.util.Log;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -12,6 +13,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * Created by Lucas on 27/11/2016.
@@ -72,5 +75,64 @@ public class Utils {
         Log.i("Utils", "Read" + text.toString());
 
         return text.toString();
+    }
+
+    public JSONObject readFileJSON (String FileName, String path) {
+
+        //String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+        final File file = new File(path, FileName);
+        StringBuilder text = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("Utils", "Read" + text.toString());
+
+        JSONObject obj = null;
+        try {
+            obj = new JSONObject(text.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj;
+    }
+
+    public JSONObject readFileJSON(InputStream inputStream) {
+        //String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+
+        StringBuilder text = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("Utils", "Read" + text.toString());
+
+        JSONObject obj = null;
+        try {
+            obj = new JSONObject(text.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj;
     }
 }

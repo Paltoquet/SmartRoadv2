@@ -127,7 +127,10 @@ public class ProximityAlert extends Activity implements Observer {
                     JSONObject travelInfo = new JSONObject();
                     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                     try {
-                        travelInfo.put("start",dateFormat.format(new Date()));
+                        travelInfo.put("start", dateFormat.format(new Date()));
+                        //TODO OBER LA COULEE DE LAVE FAIT CHIER
+                        travelInfo.put("time", 0);
+                        //TODO FIN
                         res.put("travel",travelInfo);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -154,7 +157,7 @@ public class ProximityAlert extends Activity implements Observer {
             @Override
             public void onClick(View v) {
                 //Send to the server
-                client.post("timing", res, new TimingHandler());
+                client.post("record",res,new TimingHandler());
             }
         });
     }
@@ -175,9 +178,12 @@ public class ProximityAlert extends Activity implements Observer {
             check.put("lt",checkpoint.getLatitude());
             check.put("lg", checkpoint.getLongitude());
             check.put("id", checkpoint.getId());
-            check.put("date",dateFormat.format(checkpoint.getDate()));
+            //TODO OBER LA COULEE DE LAVE FAIT CHIER
+            check.put("time", "0");
+            //check.put("date",dateFormat.format(checkpoint.getDate()));
+            //TODO FIN
             values.put(check);
-            res.put("value",values);
+            res.put("values",values);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -190,26 +196,17 @@ public class ProximityAlert extends Activity implements Observer {
 
             locationManager.addProximityAlert(Double.parseDouble(checkpoint.getLatitude()), Double.parseDouble(checkpoint.getLongitude()), 50, -1, pi);
             Toast.makeText(context, "Proximity "+ (current_checkpoint + 1) +"/"+ (number_of_checkpoint) +" ready...", Toast.LENGTH_SHORT).show();
+
+            //TODO Faire un truc avec ca
             client.post("predict",res,new TimingHandler());
         }
         //if we are at the end store the result on the server
-        //TODO envoyer dans la bd...
         else{
             Toast.makeText(context, "You arrived !", Toast.LENGTH_SHORT).show();
             Log.i("ProximityAlert","Fin du parcours");
             try {
                 res.put("value", values);
                 Log.i("ProximityAlert", String.valueOf(res));
-                client.post("record",res,new TimingHandler());
-                //writer.write(res.toString());
-                //Write file
-                Utils utils = new Utils();
-                try {
-                    utils.writeToFileWithoutErase(res.toString()+"SPLIT", "Timing.txt");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
