@@ -22,8 +22,9 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 public class WsClient{
 
     private Context context;
-    private static final String BASE_URL = "http://192.168.1.43/";
+    private static final String BASE_URL = "http://192.168.1.71/";
     private static AsyncHttpClient client = new AsyncHttpClient(7777);
+    private final String sorry = null;
 
     public WsClient(Context _context){
         context = _context;
@@ -95,4 +96,25 @@ class TimingHandler extends AsyncHttpResponseHandler{
         Log.i("reception http","fail");
     }
 }
+
+class StatsHandler extends AsyncHttpResponseHandler{
+
+    @Override
+    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+        Log.i("reception http",new String(responseBody));
+
+        Utils utils = new Utils();
+        try {
+            utils.writeToFile(new String(responseBody), "Stats.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+        Log.i("reception http","fail");
+    }
+}
+
 

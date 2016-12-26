@@ -1,11 +1,16 @@
 package com.westfolk.smartroadv2;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.loopj.android.http.RequestParams;
 import com.westfolk.smartroad.R;
 
 import org.json.JSONArray;
@@ -24,7 +29,11 @@ import java.util.concurrent.TimeUnit;
 
 public class StatsActivity extends Activity {
 
+    private WsClient client;
     private Utils utils;
+    private Button refresh;
+    private Context context;
+    private TextView moyen;
 
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
@@ -36,59 +45,33 @@ public class StatsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
-        // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.list);
+        context = this.getApplicationContext();
+        refresh = (Button) findViewById(R.id.refresh);
+        moyen = (TextView) findViewById(R.id.moyen);
 
-        // preparing list data
-        try {
-            prepareListData();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        client = new WsClient(this);
 
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+        JSONObject obj = new JSONObject();
+        client.post("stats", obj, new StatsHandler());
 
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
-
-        // Listview Group click listener
-        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-
+        refresh.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                // Toast.makeText(getApplicationContext(),
-                // "Group Clicked " + listDataHeader.get(groupPosition),
-                // Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
+            public void onClick(View v) {
 
-        // Listview Group expanded listener
-        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+                try {
+                    prepareListData();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                //Toast.makeText(getApplicationContext(), listDataHeader.get(groupPosition) + " Expanded", Toast.LENGTH_SHORT).show();
-            }
-        });
+                // get the listview
+                expListView = (ExpandableListView) findViewById(R.id.list);
 
-        // Listview Group collasped listener
-        expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+                // preparing list data
+                listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
 
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                //Toast.makeText(getApplicationContext(), listDataHeader.get(groupPosition) + " Collapsed", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Listview on child click listener
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                // TODO Auto-generated method stub
-                //Toast.makeText(getApplicationContext(), listDataHeader.get(groupPosition) + " : " + listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
-                return false;
+                // setting list adapter
+                expListView.setAdapter(listAdapter);
             }
         });
     }
@@ -96,49 +79,33 @@ public class StatsActivity extends Activity {
     /*
      * Preparing the list data
      */
-    private void prepareListData() throws JSONException {
+    protected void prepareListData() throws JSONException {
 
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
         List<String> data;
 
-        Date dateStart = null;
-        Date dateEnd = null;
-
         utils = new Utils();
-        String datas = utils.readFile("Timing.txt");
-        String toSplit = "SPLIT";
-        String[] parts = datas.split(toSplit);
+        String datas = utils.readFile("Stats.txt");
 
-        for(int i = 1; i < parts.length; i++) {
+        JSONObject dataJson = new JSONObject(datas);
+        JSONArray meanByDayArray = new JSONArray();
+        JSONArray minByDayArray = new JSONArray();
+        int Moyenne = dataJson.getInt("mean");
+
+        meanByDayArray = dataJson.getJSONArray("meanByDayArray");
+        minByDayArray = dataJson.getJSONArray("minByDayArray");
+
+        moyen.setText("Temps moyen : "+Moyenne);
+
+        for (int i = 0; i < meanByDayArray.length(); i++) {
+            listDataHeader.add( String.valueOf(meanByDayArray.getJSONObject(i).get("Day")));
+
             data = new ArrayList<String>();
+            data.add("Average time : " + String.valueOf(meanByDayArray.getJSONObject(i).get("Value")));
+            data.add("Minimum time : " + String.valueOf(minByDayArray.getJSONObject(i).get("Value")));
 
-            listDataHeader.add("Parcours "+ (i));
-
-            JSONObject dataJson = new JSONObject(parts[i-1]);
-            JSONArray dataJsonJSONArray = dataJson.getJSONArray("value");
-
-            for(int y = 0; y < dataJsonJSONArray.length(); y++) {
-                //data.add(String.valueOf(dataJsonJSONArray.getJSONObject(y)));
-                data.add("Checkpoint : "+String.valueOf(dataJsonJSONArray.getJSONObject(y).get("id")));
-                data.add("Date : "+String.valueOf(dataJsonJSONArray.getJSONObject(y).get("date")));
-
-                if(y == 0) {
-                    dateStart = new Date(String.valueOf(dataJsonJSONArray.getJSONObject(y).get("date")));
-                }
-                if(y == dataJsonJSONArray.length()-1) {
-                    dateEnd = new Date(String.valueOf(dataJsonJSONArray.getJSONObject(y).get("date")));
-                }
-            }
-
-            long millis = ( dateEnd.getTime() - dateStart.getTime() );
-            String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
-                    TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
-                    TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
-
-            data.add("Temps total : "+ hms);
-
-            listDataChild.put(listDataHeader.get(i-1), data);
+            listDataChild.put(listDataHeader.get(i), data);
         }
     }
 }

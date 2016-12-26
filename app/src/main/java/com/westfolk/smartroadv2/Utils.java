@@ -69,7 +69,7 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.i("Utils", "Read SmartRoad.json " + text.toString());
+        Log.i("Utils", "Read" + text.toString());
 
         return text.toString();
     }

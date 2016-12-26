@@ -193,6 +193,7 @@ public class ProximityAlert extends Activity implements Observer {
             client.post("predict",res,new TimingHandler());
         }
         //if we are at the end store the result on the server
+        //TODO envoyer dans la bd...
         else{
             Toast.makeText(context, "You arrived !", Toast.LENGTH_SHORT).show();
             Log.i("ProximityAlert","Fin du parcours");

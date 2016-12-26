@@ -83,7 +83,7 @@ public class TestActivity extends Activity {
             checkpoint.put("lg", checkpoint2.getLongitude());
             checkpoint.put("id", checkpoint2.getId());
             checkpoint.put("time", 177);
-            System.out.println("test putain" +dateFormat.format(checkpoint1.getDate()));
+            System.out.println("test " +dateFormat.format(checkpoint1.getDate()));
             values.put(checkpoint);
             obj.put("travel",travel);
             obj.put("values",values);
