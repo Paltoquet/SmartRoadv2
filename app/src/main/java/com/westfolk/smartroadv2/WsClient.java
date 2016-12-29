@@ -24,7 +24,6 @@ public class WsClient{
     private Context context;
     private static final String BASE_URL = "http://192.168.1.71/";
     private static AsyncHttpClient client = new AsyncHttpClient(7777);
-    private final String sorry = null;
 
     public WsClient(Context _context){
         context = _context;
@@ -89,7 +88,7 @@ class TimingHandler extends AsyncHttpResponseHandler{
     }
 }
 
-class StatsHandler extends AsyncHttpResponseHandler{
+class StatsHandler extends AsyncHttpResponseHandler {
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

@@ -17,10 +17,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,23 +59,26 @@ public class StatsActivity extends Activity {
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                try {
-                    prepareListData();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                // get the listview
-                expListView = (ExpandableListView) findViewById(R.id.list);
-
-                // preparing list data
-                listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
-
-                // setting list adapter
-                expListView.setAdapter(listAdapter);
+                load();
             }
         });
+    }
+
+    public void load() {
+        try {
+            prepareListData();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // get the listview
+        expListView = (ExpandableListView) findViewById(R.id.list);
+
+        // preparing list data
+        listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
     }
 
     /*
@@ -96,16 +101,33 @@ public class StatsActivity extends Activity {
         meanByDayArray = dataJson.getJSONArray("meanByDayArray");
         minByDayArray = dataJson.getJSONArray("minByDayArray");
 
-        moyen.setText("Temps moyen : "+Moyenne);
+        moyen.setText("Temps moyen : "+getDateFromSecond(Moyenne));
 
         for (int i = 0; i < meanByDayArray.length(); i++) {
             listDataHeader.add( String.valueOf(meanByDayArray.getJSONObject(i).get("Day")));
 
             data = new ArrayList<String>();
-            data.add("Average time : " + String.valueOf(meanByDayArray.getJSONObject(i).get("Value")));
-            data.add("Minimum time : " + String.valueOf(minByDayArray.getJSONObject(i).get("Value")));
+            String mean = String.valueOf(meanByDayArray.getJSONObject(i).get("Value"));
+            String min = String.valueOf(minByDayArray.getJSONObject(i).get("Value"));
+
+            if(!mean.equals("error")) {
+                data.add("Average time : " + getDateFromSecond(Long.parseLong(mean)));
+            } else {
+                data.add("Average time : " + mean);
+            }
+            if(!min.equals("error")) {
+                data.add("Minimum time : " + getDateFromSecond(Long.parseLong(min)));
+            } else {
+                data.add("Minimum time : " + min);
+            }
 
             listDataChild.put(listDataHeader.get(i), data);
         }
+    }
+
+    public static String getDateFromSecond(long seconds) {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        //return formatter.format(new Date((seconds-3600)*1000));
+        return formatter.format(new Date((seconds)*1000));
     }
 }

@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.westfolk.smartroad.R;
@@ -41,6 +42,8 @@ public class ProximityAlert extends Activity implements Observer {
 
     private Button proximity;
     private Button sendButton;
+    private TextView timeText;
+    private TextView predictText;
     private LocationManager locationManager;
     private ProximityReceiver receiver;
     private boolean gps_enabel = false;
@@ -49,7 +52,10 @@ public class ProximityAlert extends Activity implements Observer {
     private Context context;
     private String file_path = "current_log.txt";
     private JSONObject res;
+    private JSONObject resFinal;
     private JSONArray values;
+    private Date beginDate;
+    private Long lastDateTime = Long.valueOf(0);
 
     private ArrayList<Checkpoint> checkpoints;
     private int current_checkpoint = 0;
@@ -65,6 +71,8 @@ public class ProximityAlert extends Activity implements Observer {
 
         proximity = (Button) findViewById(R.id.proximity);
         sendButton = (Button) findViewById(R.id.send);
+        timeText = (TextView) findViewById(R.id.time);
+        predictText = (TextView) findViewById(R.id.predict);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         receiver = new ProximityReceiver();
         receiver.addObserver(this);
@@ -124,17 +132,19 @@ public class ProximityAlert extends Activity implements Observer {
                     //init the JSON
                     res = new JSONObject();
                     values = new JSONArray();
+                    beginDate = new Date();
+                    lastDateTime = beginDate.getTime();
+
                     JSONObject travelInfo = new JSONObject();
                     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                     try {
                         travelInfo.put("start", dateFormat.format(new Date()));
-                        //TODO OBER LA COULEE DE LAVE FAIT CHIER
                         travelInfo.put("time", 0);
-                        //TODO FIN
                         res.put("travel",travelInfo);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                     //specify the name of your custom intent action in the manisfest like  BOUGE TON CUL PD
                     Intent intent = new Intent("com.westfolk.smartroadv2.BOUGE_TON_CUL");
                     PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), current_checkpoint, intent, 0);
@@ -173,15 +183,20 @@ public class ProximityAlert extends Activity implements Observer {
         current_checkpoint++;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
         JSONObject check;
+
+        //date calcul
+        int time = (int) (checkpoint.getDate().getTime() - lastDateTime);
+        lastDateTime = checkpoint.getDate().getTime();
+        
+        timeText.setText("Time in second : "+time/1000+"s");
+
         check = new JSONObject();
         try {
             check.put("lt",checkpoint.getLatitude());
             check.put("lg", checkpoint.getLongitude());
             check.put("id", checkpoint.getId());
-            //TODO OBER LA COULEE DE LAVE FAIT CHIER
-            check.put("time", "0");
-            //check.put("date",dateFormat.format(checkpoint.getDate()));
-            //TODO FIN
+            check.put("time", time / 1000);
+
             values.put(check);
             res.put("values",values);
         } catch (JSONException e) {
@@ -204,12 +219,23 @@ public class ProximityAlert extends Activity implements Observer {
         else{
             Toast.makeText(context, "You arrived !", Toast.LENGTH_SHORT).show();
             Log.i("ProximityAlert","Fin du parcours");
+
+            resFinal = new JSONObject();
+
+            JSONObject travelInfo = new JSONObject();
+            Long timeTotal = new Date().getTime() - beginDate.getTime();
             try {
-                res.put("value", values);
-                Log.i("ProximityAlert", String.valueOf(res));
+                travelInfo.put("start", dateFormat.format(beginDate));
+                travelInfo.put("time", timeTotal / 1000);
+
+                resFinal.put("travel",travelInfo);
+                resFinal.put("values",values);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            Log.i("ProximityAlert", String.valueOf(resFinal));
+
         }
     }
 }
