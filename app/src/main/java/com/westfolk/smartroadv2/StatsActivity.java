@@ -101,7 +101,7 @@ public class StatsActivity extends Activity {
         meanByDayArray = dataJson.getJSONArray("meanByDayArray");
         minByDayArray = dataJson.getJSONArray("minByDayArray");
 
-        moyen.setText("Temps moyen : "+getDateFromSecond(Moyenne));
+        moyen.setText("Temps moyen : "+utils.getDateFromSecond(Moyenne));
 
         for (int i = 0; i < meanByDayArray.length(); i++) {
             listDataHeader.add( String.valueOf(meanByDayArray.getJSONObject(i).get("Day")));
@@ -111,12 +111,12 @@ public class StatsActivity extends Activity {
             String min = String.valueOf(minByDayArray.getJSONObject(i).get("Value"));
 
             if(!mean.equals("error")) {
-                data.add("Average time : " + getDateFromSecond(Long.parseLong(mean)));
+                data.add("Average time : " + utils.getDateFromSecond(Long.parseLong(mean)));
             } else {
                 data.add("Average time : " + mean);
             }
             if(!min.equals("error")) {
-                data.add("Minimum time : " + getDateFromSecond(Long.parseLong(min)));
+                data.add("Minimum time : " + utils.getDateFromSecond(Long.parseLong(min)));
             } else {
                 data.add("Minimum time : " + min);
             }
@@ -125,9 +125,5 @@ public class StatsActivity extends Activity {
         }
     }
 
-    public static String getDateFromSecond(long seconds) {
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-        //return formatter.format(new Date((seconds-3600)*1000));
-        return formatter.format(new Date((seconds)*1000));
-    }
+
 }

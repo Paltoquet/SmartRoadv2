@@ -2,6 +2,7 @@ package com.westfolk.smartroadv2;
 import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.*;
@@ -12,6 +13,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -75,11 +80,59 @@ class CheckpointHandler extends AsyncHttpResponseHandler{
     }
 }
 
-class TimingHandler extends AsyncHttpResponseHandler{
+class TimingHandler extends AsyncHttpResponseHandler {
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
         Log.i("reception http",new String(responseBody));
+    }
+
+    @Override
+    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+        Log.i("reception http","fail");
+    }
+}
+
+class TimingHandlerText extends AsyncHttpResponseHandler {
+
+    private TextView textView;
+    private TextView textViewLast;
+    private String lastPredict;
+
+    public TimingHandlerText(TextView textViewProximity, TextView textViewProximityLast) {
+        textView = textViewProximity;
+        textViewLast = textViewProximityLast;
+    }
+
+    @Override
+    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+        Utils utils = new Utils();
+
+        String response = new String(responseBody);
+        long data = Long.parseLong(response);
+        Log.i("reception http", String.valueOf(data));
+
+        lastPredict = String.valueOf(textView.getText());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        Date date = null;
+        String[] separated = lastPredict.split(" : ");
+        if(separated.length > 1) {
+            try {
+                date = sdf.parse("1970-01-01 " + separated[1]);
+                textViewLast.setText("Last prediction : " + utils.getDateFromSecond(date.getTime() / 1000));
+                textViewLast.invalidate();
+            } catch (ParseException e) {
+                textViewLast.setText("Last prediction : no last prediction yet");
+                textViewLast.invalidate();
+            }
+        }
+        textView.setText("Prediction : "+ utils.getDateFromSecond(data));
+        textView.invalidate();
+
     }
 
     @Override

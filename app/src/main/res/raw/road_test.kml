@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Placemark>
+    <name>Test</name>
+    <Point>
+      <coordinates>7.070622,43.617255,0</coordinates>
+    </Point>
+  </Placemark>
+ <Placemark>
+    <name>Test</name>
+    <Point>
+      <coordinates>7.069010,43.616858,0</coordinates>
+    </Point>
+  </Placemark>
+ <Placemark>
+    <name>Test</name>
+    <Point>
+      <coordinates>7.065899,43.616349,0</coordinates>
+    </Point>
+  </Placemark>
+ <Placemark>
+    <name>Test</name>
+    <Point>
+      <coordinates>7.067208,43.617001,0</coordinates>
+    </Point>
+  </Placemark>
+   <Placemark>
+      <name>Test</name>
+      <Point>
+        <coordinates>0,0,0</coordinates>
+      </Point>
+    </Placemark>
+</kml>
+<!-- C:\Users\Lucas\Travail\Polytech\SI5\Environn-logiciels-prog-mobi\SmartRoadv2\app\src\main\res\raw -->

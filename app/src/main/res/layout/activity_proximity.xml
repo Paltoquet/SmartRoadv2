@@ -10,34 +10,44 @@
 
 
     <Button
+        android:text="Send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/send"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
         android:text="Add proximity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/proximity"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:text="Send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/proximity"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="82dp"
-        android:id="@+id/send" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="Time in second : "
+        android:text="Last prediction :"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:id="@+id/lastPredict"
+        android:textSize="18sp"
+        android:layout_marginBottom="40dp"
+        android:layout_above="@+id/predict"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="85dp"
-        android:id="@+id/time"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textSize="18sp" />
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Current checkpoint : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="124dp"
+        android:id="@+id/checkpointText"
+        android:textSize="18sp"
+        android:layout_above="@+id/send"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:text="Prediction : "
@@ -45,9 +55,20 @@
         android:layout_height="wrap_content"
         android:id="@+id/predict"
         android:textSize="18sp"
-        android:layout_below="@+id/time"
+        android:layout_marginBottom="33dp"
+        android:layout_above="@+id/checkpointText"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="21dp" />
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Time in second : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/time"
+        android:textSize="18sp"
+        android:layout_marginBottom="34dp"
+        android:layout_above="@+id/lastPredict"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

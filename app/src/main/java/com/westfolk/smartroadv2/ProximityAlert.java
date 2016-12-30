@@ -44,6 +44,8 @@ public class ProximityAlert extends Activity implements Observer {
     private Button sendButton;
     private TextView timeText;
     private TextView predictText;
+    private TextView lastPredictText;
+    private TextView checkpointText;
     private LocationManager locationManager;
     private ProximityReceiver receiver;
     private boolean gps_enabel = false;
@@ -56,6 +58,7 @@ public class ProximityAlert extends Activity implements Observer {
     private JSONArray values;
     private Date beginDate;
     private Long lastDateTime = Long.valueOf(0);
+    private Long lastPredict = Long.valueOf(0);
 
     private ArrayList<Checkpoint> checkpoints;
     private int current_checkpoint = 0;
@@ -71,8 +74,11 @@ public class ProximityAlert extends Activity implements Observer {
 
         proximity = (Button) findViewById(R.id.proximity);
         sendButton = (Button) findViewById(R.id.send);
+        sendButton.setEnabled(false);
         timeText = (TextView) findViewById(R.id.time);
         predictText = (TextView) findViewById(R.id.predict);
+        lastPredictText = (TextView) findViewById(R.id.lastPredict);
+        checkpointText = (TextView) findViewById(R.id.checkpointText);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         receiver = new ProximityReceiver();
         receiver.addObserver(this);
@@ -158,6 +164,9 @@ public class ProximityAlert extends Activity implements Observer {
                     registerReceiver(receiver,filter);
 
                     Toast.makeText(context, "Proximity 1" +"/"+ (number_of_checkpoint) + " ready...", Toast.LENGTH_SHORT).show();
+                    //ICI
+                    checkpointText.setText("Current checkpoint : 1/"+ (number_of_checkpoint));
+                    checkpointText.invalidate();
                 }
             }
         });
@@ -173,7 +182,14 @@ public class ProximityAlert extends Activity implements Observer {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
     public void update() {
+        Utils utils = new Utils();
         Log.i("ProximityAlert","Passage au prochain checkpoint");
         checkpoints.get(current_checkpoint).setDate(new Date());
         //removing current proximity alert
@@ -185,10 +201,10 @@ public class ProximityAlert extends Activity implements Observer {
         JSONObject check;
 
         //date calcul
-        int time = (int) (checkpoint.getDate().getTime() - lastDateTime);
+        long time = (int) (checkpoint.getDate().getTime() - lastDateTime);
         lastDateTime = checkpoint.getDate().getTime();
-        
-        timeText.setText("Time in second : "+time/1000+"s");
+
+        timeText.setText("Time : "+utils.getDateFromSecond(time/1000));
 
         check = new JSONObject();
         try {
@@ -211,9 +227,10 @@ public class ProximityAlert extends Activity implements Observer {
 
             locationManager.addProximityAlert(Double.parseDouble(checkpoint.getLatitude()), Double.parseDouble(checkpoint.getLongitude()), 50, -1, pi);
             Toast.makeText(context, "Proximity "+ (current_checkpoint + 1) +"/"+ (number_of_checkpoint) +" ready...", Toast.LENGTH_SHORT).show();
+            checkpointText.setText("Current checkpoint : "+(current_checkpoint + 1) +"/"+ (number_of_checkpoint));
+            checkpointText.invalidate();
 
-            //TODO Faire un truc avec ca
-            client.post("predict",res,new TimingHandler());
+            client.post("predict",res,new TimingHandlerText(predictText, lastPredictText));
         }
         //if we are at the end store the result on the server
         else{
@@ -235,7 +252,15 @@ public class ProximityAlert extends Activity implements Observer {
             }
 
             Log.i("ProximityAlert", String.valueOf(resFinal));
-
+            sendButton.setEnabled(true);
         }
+    }
+
+    public Long getLastPredict() {
+        return lastPredict;
+    }
+
+    public void setLastPredict(Long lastPredict) {
+        this.lastPredict = lastPredict;
     }
 }

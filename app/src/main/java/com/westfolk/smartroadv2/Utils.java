@@ -15,6 +15,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Lucas on 27/11/2016.
@@ -135,4 +138,11 @@ public class Utils {
 
         return obj;
     }
+
+    public static String getDateFromSecond(long seconds) {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        //return formatter.format(new Date((seconds-3600)*1000));
+        return formatter.format(new Date((seconds)*1000));
+    }
+
 }
