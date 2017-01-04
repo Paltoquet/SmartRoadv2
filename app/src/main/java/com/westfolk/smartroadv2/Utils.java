@@ -141,8 +141,8 @@ public class Utils {
 
     public static String getDateFromSecond(long seconds) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-        //return formatter.format(new Date((seconds-3600)*1000));
-        return formatter.format(new Date((seconds)*1000));
+        return formatter.format(new Date((seconds-3600)*1000));
+        //return formatter.format(new Date((seconds)*1000));
     }
 
 }

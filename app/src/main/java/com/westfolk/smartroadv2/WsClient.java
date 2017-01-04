@@ -9,10 +9,12 @@ import com.loopj.android.http.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +29,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 public class WsClient{
 
     private Context context;
-    private static final String BASE_URL = "http://192.168.1.71/";
+    private static final String BASE_URL = "http://192.168.1.166/";
     private static AsyncHttpClient client = new AsyncHttpClient(7777);
 
     public WsClient(Context _context){
@@ -96,12 +98,15 @@ class TimingHandler extends AsyncHttpResponseHandler {
 class TimingHandlerText extends AsyncHttpResponseHandler {
 
     private TextView textView;
-    private TextView textViewLast;
-    private String lastPredict;
+    private TextView textViewHour;
+    private TextView arrivedInText;
+    private Long time;
 
-    public TimingHandlerText(TextView textViewProximity, TextView textViewProximityLast) {
+    public TimingHandlerText(TextView textViewProximity, TextView textViewProximityHour, TextView arrivedInProximityText, Long timeProximity) {
         textView = textViewProximity;
-        textViewLast = textViewProximityLast;
+        textViewHour = textViewProximityHour;
+        arrivedInText = arrivedInProximityText;
+        time = timeProximity;
     }
 
     @Override
@@ -113,25 +118,52 @@ class TimingHandlerText extends AsyncHttpResponseHandler {
         long data = Long.parseLong(response);
         Log.i("reception http", String.valueOf(data));
 
-        lastPredict = String.valueOf(textView.getText());
+        //lastPredict = String.valueOf(textView.getText());
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
+        /*
         Date date = null;
         String[] separated = lastPredict.split(" : ");
         if(separated.length > 1) {
             try {
                 date = sdf.parse("1970-01-01 " + separated[1]);
-                textViewLast.setText("Last prediction : " + utils.getDateFromSecond(date.getTime() / 1000));
+                textViewLast.setText("Last arrived in : " + utils.getDateFromSecond(date.getTime() / 1000));
                 textViewLast.invalidate();
             } catch (ParseException e) {
-                textViewLast.setText("Last prediction : no last prediction yet");
+                textViewLast.setText("Last arrived in : no last prediction yet");
                 textViewLast.invalidate();
             }
         }
+        */
         textView.setText("Prediction : "+ utils.getDateFromSecond(data));
         textView.invalidate();
+
+        Date d = new Date();
+        int nowTime =  d.getSeconds() + d.getMinutes()*60 + d.getHours()*60*60;
+
+        textViewHour.setText("Arrived at : "+  utils.getDateFromSecond((nowTime) + (data)));
+        textViewHour.invalidate();
+
+        Date date = null;
+        String lastArrived = String.valueOf(arrivedInText.getText());
+        String[] separated = lastArrived.split(" : ");
+        if(separated.length > 1) {
+            try {
+                Log.i("AAA", "ici");
+                date = sdf.parse("1970-01-01 " + separated[1]);
+                arrivedInText.setText("Arrived in : "+utils.getDateFromSecond( (date.getTime() / 1000) - time));
+                arrivedInText.invalidate();
+            } catch (ParseException e) {
+                arrivedInText.setText("Arrived in : Error");
+                arrivedInText.invalidate();
+            }
+        } else {
+            Log.i("AAA", "la");
+            arrivedInText.setText("Arrived in : "+utils.getDateFromSecond(data - time));
+            arrivedInText.invalidate();
+        }
 
     }
 

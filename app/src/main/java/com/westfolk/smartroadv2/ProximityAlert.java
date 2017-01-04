@@ -44,8 +44,9 @@ public class ProximityAlert extends Activity implements Observer {
     private Button sendButton;
     private TextView timeText;
     private TextView predictText;
-    private TextView lastPredictText;
     private TextView checkpointText;
+    private TextView predictHour;
+    private TextView arrivedInText;
     private LocationManager locationManager;
     private ProximityReceiver receiver;
     private boolean gps_enabel = false;
@@ -58,7 +59,7 @@ public class ProximityAlert extends Activity implements Observer {
     private JSONArray values;
     private Date beginDate;
     private Long lastDateTime = Long.valueOf(0);
-    private Long lastPredict = Long.valueOf(0);
+    private Long globalTime = Long.valueOf(0);;
 
     private ArrayList<Checkpoint> checkpoints;
     private int current_checkpoint = 0;
@@ -77,8 +78,9 @@ public class ProximityAlert extends Activity implements Observer {
         sendButton.setEnabled(false);
         timeText = (TextView) findViewById(R.id.time);
         predictText = (TextView) findViewById(R.id.predict);
-        lastPredictText = (TextView) findViewById(R.id.lastPredict);
         checkpointText = (TextView) findViewById(R.id.checkpointText);
+        predictHour  = (TextView) findViewById(R.id.predictHour);
+        arrivedInText = (TextView) findViewById(R.id.arrivedIn);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         receiver = new ProximityReceiver();
         receiver.addObserver(this);
@@ -164,7 +166,7 @@ public class ProximityAlert extends Activity implements Observer {
                     registerReceiver(receiver,filter);
 
                     Toast.makeText(context, "Proximity 1" +"/"+ (number_of_checkpoint) + " ready...", Toast.LENGTH_SHORT).show();
-                    //ICI
+
                     checkpointText.setText("Current checkpoint : 1/"+ (number_of_checkpoint));
                     checkpointText.invalidate();
                 }
@@ -184,7 +186,7 @@ public class ProximityAlert extends Activity implements Observer {
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(receiver);
+        // unregisterReceiver(receiver);
     }
 
     @Override
@@ -204,7 +206,8 @@ public class ProximityAlert extends Activity implements Observer {
         long time = (int) (checkpoint.getDate().getTime() - lastDateTime);
         lastDateTime = checkpoint.getDate().getTime();
 
-        timeText.setText("Time : "+utils.getDateFromSecond(time/1000));
+        globalTime += time;
+        timeText.setText("Time : "+utils.getDateFromSecond(globalTime/1000));
 
         check = new JSONObject();
         try {
@@ -230,12 +233,13 @@ public class ProximityAlert extends Activity implements Observer {
             checkpointText.setText("Current checkpoint : "+(current_checkpoint + 1) +"/"+ (number_of_checkpoint));
             checkpointText.invalidate();
 
-            client.post("predict",res,new TimingHandlerText(predictText, lastPredictText));
+            client.post("predict",res,new TimingHandlerText(predictText, predictHour, arrivedInText, (time/1000)));
         }
         //if we are at the end store the result on the server
         else{
             Toast.makeText(context, "You arrived !", Toast.LENGTH_SHORT).show();
             Log.i("ProximityAlert","Fin du parcours");
+            arrivedInText.setText("Arrived in : 00:00:00");
 
             resFinal = new JSONObject();
 
@@ -254,13 +258,5 @@ public class ProximityAlert extends Activity implements Observer {
             Log.i("ProximityAlert", String.valueOf(resFinal));
             sendButton.setEnabled(true);
         }
-    }
-
-    public Long getLastPredict() {
-        return lastPredict;
-    }
-
-    public void setLastPredict(Long lastPredict) {
-        this.lastPredict = lastPredict;
     }
 }

@@ -103,7 +103,7 @@ public class RecordActivity extends ActionBarActivity {
                     //create a RecordTask which will save the longitude and latitude
                     task = new RecordTask(locationManager, getApplicationContext(),queue,"record.txt");
                     //call the run method of the Tash each 30sec
-                    timer.schedule(task, 0, 30000);
+                    timer.schedule(task, 0, 15000);//TODO remettre 30000
                 }
             }
         });
