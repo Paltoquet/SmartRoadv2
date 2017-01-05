@@ -96,10 +96,12 @@ public class StatsActivity extends Activity {
         JSONObject dataJson = new JSONObject(datas);
         JSONArray meanByDayArray = new JSONArray();
         JSONArray minByDayArray = new JSONArray();
+        JSONArray maxByDayArray;
         int Moyenne = dataJson.getInt("mean");
 
         meanByDayArray = dataJson.getJSONArray("meanByDayArray");
         minByDayArray = dataJson.getJSONArray("minByDayArray");
+        maxByDayArray = dataJson.getJSONArray("maxByDayArray");
 
         moyen.setText("Temps moyen : "+utils.getDateFromSecond(Moyenne));
 
@@ -109,6 +111,9 @@ public class StatsActivity extends Activity {
             data = new ArrayList<String>();
             String mean = String.valueOf(meanByDayArray.getJSONObject(i).get("Value"));
             String min = String.valueOf(minByDayArray.getJSONObject(i).get("Value"));
+            String minHour = String.valueOf(minByDayArray.getJSONObject(i).get("Hour"));
+            String max  = String.valueOf(maxByDayArray.getJSONObject(i).get("Value"));
+            String maxHour = String.valueOf(maxByDayArray.getJSONObject(i).get("Hour"));
 
             if(!mean.equals("error")) {
                 data.add("Average time : " + utils.getDateFromSecond(Long.parseLong(mean)));
@@ -120,6 +125,22 @@ public class StatsActivity extends Activity {
             } else {
                 data.add("Minimum time : " + min);
             }
+            if(!minHour.equals("error")) {
+                data.add("Minimum at : " + utils.getDateFromSecond(Long.parseLong(minHour)));
+            } else {
+                data.add("Minimum at : " + minHour);
+            }
+            if(!max.equals("error")) {
+                data.add("Maximum time : " + utils.getDateFromSecond(Long.parseLong(max)));
+            } else {
+                data.add("Maximum time : " + max);
+            }
+            if(!maxHour.equals("error")) {
+                data.add("Maximum at : " + utils.getDateFromSecond(Long.parseLong(maxHour)));
+            } else {
+                data.add("Maximum at : " + maxHour);
+            }
+
 
             listDataChild.put(listDataHeader.get(i), data);
         }

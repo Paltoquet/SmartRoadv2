@@ -43,8 +43,8 @@
     <Button
         style="@style/bouton"
         android:layout_centerHorizontal="true"
-        android:text="Test"
-        android:id="@+id/test"
+        android:text="Leaving Now"
+        android:id="@+id/leaveNow"
         android:background="@drawable/bouton"
         android:layout_width="300dp"
         android:layout_height="60dp"

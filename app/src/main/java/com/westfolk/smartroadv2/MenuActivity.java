@@ -12,12 +12,11 @@ import com.westfolk.smartroad.R;
 
 
 public class MenuActivity extends ActionBarActivity {
-
-
-    Button start;
-    Button stats;
-    Button test;
+    private Button start;
+    private Button stats;
+    //private Button test;
     private Button proximity;
+    private Button leaveNow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +25,8 @@ public class MenuActivity extends ActionBarActivity {
         start=(Button)findViewById(R.id.start);
         stats=(Button)findViewById(R.id.stats);
         proximity=(Button)findViewById(R.id.proximity);
-        test = (Button)findViewById(R.id.test);
+        //test = (Button)findViewById(R.id.test);
+        leaveNow = (Button)findViewById(R.id.leaveNow);
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +51,15 @@ public class MenuActivity extends ActionBarActivity {
                 overridePendingTransition(R.anim.left_animation, R.anim.right_animation);
             }
         });
+        leaveNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent thirdActivite = new Intent(MenuActivity.this, LeaveNowActivity.class);
+                startActivity(thirdActivite);
+                overridePendingTransition(R.anim.left_animation, R.anim.right_animation);
+            }
+        });
+        /*
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,5 +68,6 @@ public class MenuActivity extends ActionBarActivity {
                 overridePendingTransition(R.anim.left_animation, R.anim.right_animation);
             }
         });
+        */
     }
 }

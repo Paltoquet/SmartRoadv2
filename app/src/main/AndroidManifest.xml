@@ -37,6 +37,11 @@
             android:label="@string/title_activity_record"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name="com.westfolk.smartroadv2.LeaveNowActivity"
+            android:label="@string/title_activity_record"
+            android:screenOrientation="portrait">
+        </activity>
 
         <receiver android:name="com.westfolk.smartroadv2.ProximityReceiver" ></receiver>
     </application>

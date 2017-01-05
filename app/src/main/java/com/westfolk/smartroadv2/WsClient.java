@@ -29,7 +29,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 public class WsClient{
 
     private Context context;
-    private static final String BASE_URL = "http://192.168.1.166/";
+    private static final String BASE_URL = "http://10.188.47.94/";
     private static AsyncHttpClient client = new AsyncHttpClient(7777);
 
     public WsClient(Context _context){
@@ -151,7 +151,6 @@ class TimingHandlerText extends AsyncHttpResponseHandler {
         String[] separated = lastArrived.split(" : ");
         if(separated.length > 1) {
             try {
-                Log.i("AAA", "ici");
                 date = sdf.parse("1970-01-01 " + separated[1]);
                 arrivedInText.setText("Arrived in : "+utils.getDateFromSecond( (date.getTime() / 1000) - time));
                 arrivedInText.invalidate();
@@ -160,7 +159,6 @@ class TimingHandlerText extends AsyncHttpResponseHandler {
                 arrivedInText.invalidate();
             }
         } else {
-            Log.i("AAA", "la");
             arrivedInText.setText("Arrived in : "+utils.getDateFromSecond(data - time));
             arrivedInText.invalidate();
         }
@@ -185,6 +183,40 @@ class StatsHandler extends AsyncHttpResponseHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+        Log.i("reception http","fail");
+    }
+}
+class LeaveHandler extends AsyncHttpResponseHandler {
+
+    private TextView leaveTimeText;
+    private TextView leaveHourText;
+
+    public LeaveHandler(TextView leaveTimeText, TextView leaveHourText) {
+        this.leaveTimeText = leaveTimeText;
+        this.leaveHourText = leaveHourText;
+    }
+
+    @Override
+    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+        Utils utils = new Utils();
+
+        String response = new String(responseBody);
+        long data = Long.parseLong(response);
+        Log.i("reception http", String.valueOf(data));
+
+        leaveTimeText.setText("You'll arrived in : "+ utils.getDateFromSecond(data));
+        leaveTimeText.invalidate();
+
+        Date d = new Date();
+        int nowTime =  d.getSeconds() + d.getMinutes()*60 + d.getHours()*60*60;
+
+        leaveHourText.setText("You'll arrived at : "+  utils.getDateFromSecond((nowTime) + (data)));
+        leaveHourText.invalidate();
     }
 
     @Override
