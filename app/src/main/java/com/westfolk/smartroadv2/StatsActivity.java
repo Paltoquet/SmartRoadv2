@@ -50,11 +50,14 @@ public class StatsActivity extends Activity {
         context = this.getApplicationContext();
         refresh = (Button) findViewById(R.id.refresh);
         moyen = (TextView) findViewById(R.id.moyen);
+        // get the listview
+        expListView = (ExpandableListView) findViewById(R.id.list);
+        refresh.setVisibility(View.INVISIBLE);
 
         client = new WsClient(this);
 
         JSONObject obj = new JSONObject();
-        client.post("stats", obj, new StatsHandler());
+        client.post("stats", obj, new StatsHandler(listAdapter, expListView, listDataHeader, listDataChild, moyen, refresh, context));
 
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,9 +73,6 @@ public class StatsActivity extends Activity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.list);
 
         // preparing list data
         listAdapter = new ExpandableListAdapter(context, listDataHeader, listDataChild);

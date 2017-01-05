@@ -27,7 +27,7 @@
         android:minWidth="40dp" />
 
     <TextView
-        android:text="Please load file -->"
+        android:text="Please wait..."
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/moyen"
@@ -42,5 +42,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textAlignment="viewStart" />
 </RelativeLayout>
