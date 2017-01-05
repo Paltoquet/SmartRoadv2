@@ -93,6 +93,9 @@ public class StatsActivity extends Activity {
         utils = new Utils();
         String datas = utils.readFile("Stats.txt");
 
+        if(datas.length() == 0)
+        moyen.setText("No old file... :/");
+
         JSONObject dataJson = new JSONObject(datas);
         JSONArray meanByDayArray = new JSONArray();
         JSONArray minByDayArray = new JSONArray();

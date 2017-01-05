@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -60,6 +61,7 @@ public class ProximityAlert extends Activity implements Observer {
     private Date beginDate;
     private Long lastDateTime = Long.valueOf(0);
     private Long globalTime = Long.valueOf(0);;
+    private long startTime = 0;
 
     private ArrayList<Checkpoint> checkpoints;
     private int current_checkpoint = 0;
@@ -143,6 +145,10 @@ public class ProximityAlert extends Activity implements Observer {
                     beginDate = new Date();
                     lastDateTime = beginDate.getTime();
 
+                    // Dynamic timer
+                    startTime = System.currentTimeMillis();
+                    timerHandler.postDelayed(timerRunnable, 0);
+
                     JSONObject travelInfo = new JSONObject();
                     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                     try {
@@ -206,8 +212,8 @@ public class ProximityAlert extends Activity implements Observer {
         long time = (int) (checkpoint.getDate().getTime() - lastDateTime);
         lastDateTime = checkpoint.getDate().getTime();
 
-        globalTime += time;
-        timeText.setText("Time : "+utils.getDateFromSecond(globalTime/1000));
+        //globalTime += time;
+        //timeText.setText("Time : "+utils.getDateFromSecond(globalTime/1000));
 
         check = new JSONObject();
         try {
@@ -240,6 +246,8 @@ public class ProximityAlert extends Activity implements Observer {
             Toast.makeText(context, "You arrived !", Toast.LENGTH_SHORT).show();
             Log.i("ProximityAlert","Fin du parcours");
             arrivedInText.setText("Arrived in : 00:00:00");
+            //stop the timer
+            timerHandler.removeCallbacks(timerRunnable);
 
             resFinal = new JSONObject();
 
@@ -259,4 +267,20 @@ public class ProximityAlert extends Activity implements Observer {
             sendButton.setEnabled(true);
         }
     }
+
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            long millis = System.currentTimeMillis() - startTime;
+            int seconds = (int) (millis / 1000);
+            int minutes = seconds / 60;
+            seconds = seconds % 60;
+
+            timeText.setText("Time : "+String.format("%d:%02d", minutes, seconds));
+
+            timerHandler.postDelayed(this, 500);
+        }
+    };
 }
