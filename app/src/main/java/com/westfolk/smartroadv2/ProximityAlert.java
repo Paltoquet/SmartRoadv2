@@ -184,7 +184,7 @@ public class ProximityAlert extends Activity implements Observer {
             @Override
             public void onClick(View v) {
                 //Send to the server
-                client.post("record",res,new TimingHandler());
+                client.post("record",resFinal,new TimingHandler());
             }
         });
     }
