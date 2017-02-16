@@ -1,34 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
-  <Placemark>
-    <name>Test</name>
-    <Point>
-      <coordinates>7.070622,43.617255,0</coordinates>
-    </Point>
-  </Placemark>
- <Placemark>
-    <name>Test</name>
-    <Point>
-      <coordinates>7.069010,43.616858,0</coordinates>
-    </Point>
-  </Placemark>
- <Placemark>
-    <name>Test</name>
-    <Point>
-      <coordinates>7.065899,43.616349,0</coordinates>
-    </Point>
-  </Placemark>
- <Placemark>
-    <name>Test</name>
-    <Point>
-      <coordinates>7.067208,43.617001,0</coordinates>
-    </Point>
-  </Placemark>
-   <Placemark>
-      <name>Test</name>
-      <Point>
-        <coordinates>0,0,0</coordinates>
-      </Point>
-    </Placemark>
+<Placemark><name>Test</name><Point><coordinates>7.070626, 43.617022, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>7.065710, 43.616190, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>7.059448, 43.617274, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>7.050966, 43.617607, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>7.045980, 43.613479, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>7.037392, 43.616459, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>7.027715, 43.612815, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>7.020811, 43.610839, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>7.009675, 43.608355, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>7.011713, 43.603305, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>7.003899, 43.602795, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>6.982483, 43.607728, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>6.967509, 43.611283, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>6.960655, 43.604510 ,0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>6.956935, 43.598892, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>6.954510, 43.597569, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>6.956929, 43.592445, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>6.956874, 43.587787, 0</coordinates></Point></Placemark>
+
+<Placemark><name>Test</name><Point><coordinates>6.953680, 43.586286, 0</coordinates></Point></Placemark>
 </kml>
+
 <!-- C:\Users\Lucas\Travail\Polytech\SI5\Environn-logiciels-prog-mobi\SmartRoadv2\app\src\main\res\raw -->
