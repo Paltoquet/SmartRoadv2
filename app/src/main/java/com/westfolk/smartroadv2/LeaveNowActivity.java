@@ -63,7 +63,7 @@ public class LeaveNowActivity extends Activity {
             coord.put("lt", 0);
             coord.put("lg", 0);
             coord.put("id", 0);
-            coord.put("time", 0);
+            coord.put("time", 100);
             values.put(coord);
 
             jsonObject.put("values", values);
@@ -85,16 +85,15 @@ public class LeaveNowActivity extends Activity {
         // ================ TEST  ================
         // ******* FAST *******
         //2 checkpoints (19 au total en vrai)
-        String fastString = "{\"travel\":{\"start\":\"2017\\/01\\/29-17:15:24\",\"time\":0},\"values\":[" +
-                "{\"lt\":\"43.61702166666667\",\"lg\":\"7.070624999999999\",\"id\":0,\"time\":1}," +
-                "{\"lt\":\"43.61619\",\"lg\":\"7.065709999999999\",\"id\":1,\"time\":1}]}";
+        String fastString = "{\"travel\":{\"start\":\"2017\\/01\\/29-20:15:24\",\"time\":0},\"values\":[" +
+                "{\"lt\":\"43.61702166666667\",\"lg\":\"7.070624999999999\",\"id\":0,\"time\":40}," +
+                "{\"lt\":\"43.61619\",\"lg\":\"7.065709999999999\",\"id\":1,\"time\":40}]}";
 
-        //4 checkpoints (19 au total en vrai)
-        String fastString2 = "{\"travel\":{\"start\":\"2017\\/01\\/29-17:15:24\",\"time\":0},\"values\":[" +
-                "{\"lt\":\"43.61702166666667\",\"lg\":\"7.070624999999999\",\"id\":0,\"time\":1}," +
-                "{\"lt\":\"43.61619\",\"lg\":\"7.065709999999999\",\"id\":1,\"time\":1}," +
-                "{\"lt\":\"43.61727333333333\",\"lg\":\"7.059446666666665\",\"id\":2,\"time\":1}," +
-                "{\"lt\":\"43.613479\",\"lg\":\"7.045980\",\"id\":3,\"time\":1}]}";
+        //3 checkpoints (19 au total en vrai)
+        String fastString2 = "{\"travel\":{\"start\":\"2017\\/01\\/29-15:15:24\",\"time\":0},\"values\":[" +
+                "{\"lt\":\"43.61702166666667\",\"lg\":\"7.070624999999999\",\"id\":0,\"time\":40}," +
+                "{\"lt\":\"43.61619\",\"lg\":\"7.065709999999999\",\"id\":1,\"time\":40}," +
+                "{\"lt\":\"43.61727333333333\",\"lg\":\"7.059446666666665\",\"id\":2,\"time\":40}]}";
 
         //10 checkpoints (19 au total en vrai)
         String fastString3 = "{\"travel\":{\"start\":\"2017\\/01\\/29-17:15:24\",\"time\":0},\"values\":[" +
@@ -133,7 +132,7 @@ public class LeaveNowActivity extends Activity {
         //Build JSON
         JSONObject fastJson = null;
         try {
-            fastJson = new JSONObject(fastString); //Switch string here to test
+            fastJson = new JSONObject(fastString2); //Switch string here to test
         } catch (JSONException e) {
             e.printStackTrace();
         }
