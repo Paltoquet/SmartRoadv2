@@ -15,8 +15,9 @@
 
 ## Utilisation
 
-- Lors de votre premier trajet, allez dans le menu `START`, lancez le record et roulez. Ce record va capturer un point toutes les minutes.
-- Une fois votre trajet terminé, appuyez sur le bouton `STOP` et envoyez le résultat au serveur (une fois dans le même réseau si celui-ci n'est pas sur un cloud).
+- Lors de votre premier trajet, allez dans le menu `START`, lancez le record et roulez. 
+  - Ce record va capturer un point toutes les minutes.
+  - Une fois votre trajet terminé, appuyez sur le bouton `STOP` et envoyez le résultat au serveur (une fois dans le même réseau si celui-ci n'est pas sur un cloud).
 - Lors de votre deuxième trajet, allez dans le menu proximity, ajouter les checkpoints à l'aide du bouton `ADD PROXIMITY`.
 - Vous pouvez ensuite rouler normalement. Si le serveur est en ligne, vous recevrez des prédictions à chaque checkpoints.
 - Une fois le chemin terminé, envoyez les résultats au serveur à l'aide du bouton `SEND`.
