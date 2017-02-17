@@ -11,6 +11,7 @@
 `git clone https://github.com/Paltoquet/SmartRoadv2.git`
 - Ouvrez le `build.gradle` du répertoire à l'aide d'Android Studio
 - Branchez votre téléphone et lancez la compilation
+- Une fois dans l'application pensez à changer l'adresse IP à l'aide du bouton `IP`
 
 ## Utilisation
 
