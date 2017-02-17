@@ -21,5 +21,6 @@
 - Lors de votre deuxième trajet, allez dans le menu proximity, ajouter les checkpoints à l'aide du bouton `ADD PROXIMITY`.
   - Vous pouvez ensuite rouler normalement. Si le serveur est en ligne, vous recevrez des prédictions à chaque checkpoints.
   - Une fois le chemin terminé, envoyez les résultats au serveur à l'aide du bouton `SEND`.
-- Vous pouvez consulter vos données de trajet dans le menu `STATS`
-- Vous pouvez demander une prédiction d'heure d'arrivé à l'aide du menu `LEAVING NOW`
+- Vous pouvez consulter vos données de trajet dans le menu `STATS`.
+- Vous pouvez demander une prédiction d'heure d'arrivé à l'aide du menu `LEAVING NOW`.
+  - Dans cette page, vous avez également deux boutons tests qui sont là pour être utilisés lors de la démonstration.
