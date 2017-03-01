@@ -25,7 +25,7 @@
 - Vous pouvez demander une prédiction d'heure d'arrivé à l'aide du menu `LEAVING NOW`.
   - Dans cette page, vous avez également deux boutons tests qui sont là pour être utilisés lors de la démonstration.
 
-```
+```C
 void xorFunction2(Ptr<Int> p, Ptr<Int> q, Ptr<Int> r, Int n)
 {
   Int inc = numQPUs() << 4;
