@@ -24,3 +24,28 @@
 - Vous pouvez consulter vos données de trajet dans le menu `STATS`.
 - Vous pouvez demander une prédiction d'heure d'arrivé à l'aide du menu `LEAVING NOW`.
   - Dans cette page, vous avez également deux boutons tests qui sont là pour être utilisés lors de la démonstration.
+
+```
+void xorFunction2(Ptr<Int> p, Ptr<Int> q, Ptr<Int> r, Int n)
+{
+  Int inc = numQPUs() << 4;
+
+  Ptr<Int> a = p + index() + (me() << 4);
+  Ptr<Int> b = q + index() + (me() << 4);
+  Ptr<Int> c = r + index() + (me() << 4);
+  gather(a);gather(b);
+  
+  Int pOld, qOld, rOld;
+
+  For(Int i = 0, i<n-1, i=i+inc)
+    gather(a+inc); gather(b+inc);
+    receive(pOld); receive(qOld);
+    
+    store(pOld^qOld, c);
+    
+    a = a+inc; b=b+inc; c=c+inc;
+  End
+  receive(pOld); receive(qOld);
+  store(pOld^qOld, c);
+}
+```
